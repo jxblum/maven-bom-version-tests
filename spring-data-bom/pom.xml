@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.spring.maven</groupId>
+        <artifactId>maven-bom-version-tests</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-data-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <name>spring-data-bom</name>
+    <description>
+        Mock Maven BOM for Spring Data used to manage all Spring Data modules and their compatible versions.
+    </description>
+
+    <properties>
+        <spring-data-cassandra.version>4.0.0-M4</spring-data-cassandra.version>
+        <spring-data-commons.version>3.0.0-M4</spring-data-commons.version>
+        <spring-data-envers.version>3.0.0-M4</spring-data-envers.version>
+        <spring-data-geode.version>3.0.0-M4</spring-data-geode.version>
+        <spring-data-jdbc.version>3.0.0-M4</spring-data-jdbc.version>
+        <spring-data-jpa.version>3.0.0-M4</spring-data-jpa.version>
+        <spring-data-keyvalue.version>3.0.0-M4</spring-data-keyvalue.version>
+        <spring-data-ldap.version>3.0.0-M4</spring-data-ldap.version>
+        <spring-data-mongodb.version>4.0.0-M4</spring-data-mongodb.version>
+        <spring-data-r2dbc.version>3.0.0-M4</spring-data-r2dbc.version>
+        <spring-data-redis.version>3.0.0-M4</spring-data-redis.version>
+        <spring-data-relational.version>3.0.0-M4</spring-data-relational.version>
+        <spring-data-rest.version>4.0.0-M4</spring-data-rest.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-cassandra</artifactId>
+                <version>${spring-data-cassandra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring-data-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-envers</artifactId>
+                <version>${spring-data-envers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-geode</artifactId>
+                <version>${spring-data-geode.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jdbc</artifactId>
+                <version>${spring-data-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>${spring-data-jpa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-keyvalue</artifactId>
+                <version>${spring-data-keyvalue.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-ldap</artifactId>
+                <version>${spring-data-ldap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-mongodb</artifactId>
+                <version>${spring-data-mongodb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-r2dbc</artifactId>
+                <version>${spring-data-r2dbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${spring-data-redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-relational</artifactId>
+                <version>${spring-data-relational.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-rest-core</artifactId>
+                <version>${spring-data-rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-rest-hal-explorer</artifactId>
+                <version>${spring-data-rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-rest-webmvc</artifactId>
+                <version>${spring-data-rest.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

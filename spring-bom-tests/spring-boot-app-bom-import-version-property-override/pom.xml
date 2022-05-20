@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.spring.maven</groupId>
+        <artifactId>spring-bom-tests</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-boot-app-bom-import-version-property-override</artifactId>
+    <packaging>jar</packaging>
+
+    <description>
+        Spring Boot application importing the (Mock) Spring Boot BOM and overriding the spring-data-redis dependency
+        version by using the 'spring-data-redis.version' property declared in the Spring Data BOM.
+    </description>
+
+    <properties combine.children="override" combine.self="override">
+        <spring-boot-bom.version>1.0.0-SNAPSHOT</spring-boot-bom.version>
+        <!-- TODO: NOTE - SD Redis version property used to "override" the imported spring-boot-bom / spring-data-bom
+                managed SD Redis version does not work! -->
+        <spring-data-redis.version>2.7.0</spring-data-redis.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.spring.maven</groupId>
+                <artifactId>spring-boot-bom</artifactId>
+                <version>${spring-boot-bom.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

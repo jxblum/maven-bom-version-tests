@@ -1,0 +1,17 @@
+= Maven BOM Versioning Tests
+
+This example Maven project experiments with project/module version management when Maven BOMs are declared and used for
+dependency management and/or inheritance (i.e. BOM is used as the parent project for a Maven project module).
+
+== Helpful Links with Information about Maven
+
+* https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#project-interpolation-and-variables[Project Interpolation and Variables]
+
+Discusses the use of variables when both the parent ahd child declare and define the same variable.  For example:
+
+> One factor to note is that these variables are processed after inheritance as outlined above. This means that
+if a parent project uses a variable, then its definition in the child, not the parent, will be the one eventually used.
+
+
+
+

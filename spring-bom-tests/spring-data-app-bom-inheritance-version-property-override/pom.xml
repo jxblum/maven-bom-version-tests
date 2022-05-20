@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.spring.maven</groupId>
+        <artifactId>spring-data-bom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-data-app-bom-inheritance-version-property-override</artifactId>
+
+    <description>
+        Spring Data application inheriting from the (Mock) Spring Data BOM and overriding the spring-data-redis
+        dependency version using the 'spring-data-redis.version' property declared in the (Mock) Spring Data BOM.
+    </description>
+
+    <properties>
+        <spring-data-redis.version>2.7.0</spring-data-redis.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
