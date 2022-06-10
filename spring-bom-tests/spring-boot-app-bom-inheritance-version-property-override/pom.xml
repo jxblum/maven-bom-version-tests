@@ -12,12 +12,14 @@
     </parent>
 
     <artifactId>spring-boot-app-bom-inheritance-version-property-override</artifactId>
+    <packaging>jar</packaging>
 
     <description>
         Spring Boot application inheriting from the (Mock) Spring Boot BOM and overriding the spring-data-redis
         dependency version by using the 'spring-data-redis.version' property declared in the Spring Data BOM.
     </description>
 
+    <!-- TODO: The 'properties' element attributes are not (unfortuntely) declared in the XSD. -->
     <properties combine.children="override" combine.self="override">
         <spring-data.redis.version>2.7.0</spring-data.redis.version>
     </properties>

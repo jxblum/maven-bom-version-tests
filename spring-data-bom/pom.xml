@@ -14,7 +14,7 @@
     <artifactId>spring-data-bom</artifactId>
     <packaging>pom</packaging>
 
-    <name>spring-data-bom</name>
+    <name>Spring Data BOM</name>
     <description>
         Mock Maven BOM for Spring Data used to manage all Spring Data modules and their compatible versions.
     </description>

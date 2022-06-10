@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>spring-data-app-bom-inheritance-version-property-override</artifactId>
+    <packaging>jar</packaging>
 
     <description>
         Spring Data application inheriting from the (Mock) Spring Data BOM and overriding the spring-data-redis

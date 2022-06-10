@@ -1,6 +1,6 @@
 = Spring Boot application inheriting from the (Mock) Spring Boot BOM using version property override
 
-In this test case, the Spring Boot application Maven POM inherits from the (Mock) Spring Boot BOM:
+In this test case, the Spring Boot application Maven POM *inherits* from the (Mock) Spring Boot BOM:
 
 .Inherit from the (Mock) Spring Boot BOM
 [source, xml]

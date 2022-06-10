@@ -14,7 +14,7 @@
     <artifactId>spring-boot-bom</artifactId>
     <packaging>pom</packaging>
 
-    <name>spring-boot-bom</name>
+    <name>Spring Boot BOM</name>
     <description>
         Mock Maven BOM for Spring Boot used to manage declared dependencies for Spring [Boot] applications.
     </description>

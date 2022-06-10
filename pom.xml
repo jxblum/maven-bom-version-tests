@@ -12,7 +12,7 @@
 
     <name>Maven BOM Version Tests</name>
     <description>
-        Version Tests with Maven BOMs.
+        Version Tests with Maven BOMs using different configuration arrangements.
     </description>
 
     <modules>
