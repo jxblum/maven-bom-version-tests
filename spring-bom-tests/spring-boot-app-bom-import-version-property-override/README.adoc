@@ -87,3 +87,52 @@ $ mvn dependency:tree
 ----
 
 Clearly, this does not work!
+
+[[maven-property]]
+== Using Maven Property Declared on the Command-Line
+
+When declaring the Spring Data Redis version via a Maven Property on the command-line, like so:
+
+.Using Maven Property
+[source,txt]
+----
+$ mvn -Dspring-data-redis.version=2.7.0 dependency:tree | less
+----
+
+Then, this works!
+
+.Maven Dependency Tree
+[source,txt]
+----
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --< io.spring.maven:spring-boot-app-bom-import-version-property-override >--
+[INFO] Building spring-boot-app-bom-import-version-property-override 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ spring-boot-app-bom-import-version-property-override ---
+[INFO] io.spring.maven:spring-boot-app-bom-import-version-property-override:jar:1.0.0-SNAPSHOT
+[INFO] +- org.springframework.data:spring-data-mongodb:jar:4.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-tx:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-context:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-beans:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-core:jar:6.0.0-M4:compile
+[INFO] |  |  \- org.springframework:spring-jcl:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-expression:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework.data:spring-data-commons:jar:3.0.0-M4:compile
+[INFO] |  +- org.mongodb:mongodb-driver-core:jar:4.6.0:compile
+[INFO] |  |  +- org.mongodb:bson:jar:4.6.0:compile
+[INFO] |  |  \- org.mongodb:bson-record-codec:jar:4.6.0:runtime
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.32:compile
+[INFO] \- org.springframework.data:spring-data-redis:jar:2.7.0:compile
+[INFO]    +- org.springframework.data:spring-data-keyvalue:jar:3.0.0-M4:compile
+[INFO]    +- org.springframework:spring-oxm:jar:5.3.20:compile
+[INFO]    +- org.springframework:spring-aop:jar:5.3.20:compile
+[INFO]    \- org.springframework:spring-context-support:jar:5.3.20:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.680 s
+[INFO] Finished at: 2022-06-13T09:47:01-07:00
+[INFO] ------------------------------------------------------------------------
+----
