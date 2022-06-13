@@ -19,8 +19,10 @@
         dependency version by using the 'spring-data-redis.version' property declared in the Spring Data BOM.
     </description>
 
-    <!-- TODO: The 'properties' element attributes are not (unfortuntely) declared in the XSD. -->
+    <!-- TODO: The 'properties' element attributes are not (unfortunately) declared in the XSD. -->
     <properties combine.children="override" combine.self="override">
+        <!-- TODO: NOTE - SD Redis version property used to "override" the inherited spring-boot-bom / spring-data-bom
+                managed SD Redis version does not work! -->
         <spring-data.redis.version>2.7.0</spring-data.redis.version>
     </properties>
 

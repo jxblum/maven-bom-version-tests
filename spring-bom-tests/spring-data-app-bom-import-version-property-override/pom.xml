@@ -19,8 +19,7 @@
         version by using the 'spring-data-redis.version' property declared in the Spring Data BOM.
     </description>
 
-    <!-- TODO: The 'properties' element attributes are not (unfortuntely) declared in the XSD. -->
-    <properties combine.children="override" combine.self="override">
+    <properties>
         <spring-data-bom.version>1.0.0-SNAPSHOT</spring-data-bom.version>
         <spring-data-redis.version>2.7.0</spring-data-redis.version>
     </properties>

@@ -19,7 +19,7 @@
         version by using the 'spring-data-redis.version' property declared in the Spring Data BOM.
     </description>
 
-    <!-- TODO: The 'properties' element attributes are not (unfortuntely) declared in the XSD. -->
+    <!-- TODO: The 'properties' element attributes are not (unfortunately) declared in the XSD. -->
     <properties combine.children="override" combine.self="override">
         <spring-boot-bom.version>1.0.0-SNAPSHOT</spring-boot-bom.version>
         <!-- TODO: NOTE - SD Redis version property used to "override" the imported spring-boot-bom / spring-data-bom
