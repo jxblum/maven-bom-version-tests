@@ -10,16 +10,16 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Maven BOM Version Tests</name>
-    <description>
-        Version Tests with Maven BOMs using different configuration arrangements.
-    </description>
-
     <modules>
         <module>spring-boot-bom</module>
         <module>spring-data-bom</module>
         <module>spring-bom-tests</module>
     </modules>
+
+    <name>Maven BOM Version Tests</name>
+    <description>
+        Version Tests with Maven BOMs using different configuration arrangements.
+    </description>
 
     <repositories>
         <repository>
@@ -33,8 +33,21 @@
     </repositories>
 
     <properties>
+        <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
