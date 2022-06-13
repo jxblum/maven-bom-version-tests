@@ -130,8 +130,13 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>spring-data-version.properties</file>
+                                <file>${project.basedir}/spring-data-version.properties</file>
                             </files>
+<!--
+                            <urls>
+                                <url>classpath:spring-data-version.properties</url>
+                            </urls>
+-->
                             <quiet>true</quiet>
                         </configuration>
                     </execution>
