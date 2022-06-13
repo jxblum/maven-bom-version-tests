@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+
+group 'io.spring.gradle'
+version '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencyManagement {
+    dependencies {
+        dependency 'io.spring.maven:spring-boot-bom:1.0.0-SNAPSHOT'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.data:spring-data-mongodb'
+    implementation 'org.springframework.data:spring-data-redis'
+}
