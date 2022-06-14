@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>properties-maven-extension</module>
         <module>spring-boot-bom</module>
         <module>spring-data-bom</module>
         <module>spring-bom-tests</module>
