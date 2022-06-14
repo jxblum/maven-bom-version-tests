@@ -89,7 +89,7 @@ $ mvn dependency:tree
 Clearly, this does not work!
 
 [[maven-property]]
-== Using Maven Property Declared on the Command-Line
+== Using Maven Property declared on the command-line
 
 When declaring the Spring Data Redis version via a Maven Property on the command-line, like so:
 
@@ -99,7 +99,7 @@ When declaring the Spring Data Redis version via a Maven Property on the command
 $ mvn -Dspring-data-redis.version=2.7.0 dependency:tree | less
 ----
 
-Then, this works!
+This works!
 
 .Maven Dependency Tree
 [source,txt]
