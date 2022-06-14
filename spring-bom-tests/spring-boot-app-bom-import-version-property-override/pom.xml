@@ -73,4 +73,13 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>spring-data-redis-version-override</id>
+            <properties>
+                <spring-data-redis.version>2.5.0</spring-data-redis.version>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
