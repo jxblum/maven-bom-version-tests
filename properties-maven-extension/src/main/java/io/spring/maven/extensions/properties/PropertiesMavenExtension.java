@@ -8,7 +8,6 @@ import java.util.Properties;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -41,13 +40,12 @@ public class PropertiesMavenExtension extends AbstractMavenLifecycleParticipant 
 		super.afterProjectsRead(session);
 
 		MavenProject mavenProject = session.getCurrentProject();
-		Model model = mavenProject.getModel();
 
 		File propertiesFile = new File(mavenProject.getBasedir(), getPropertiesFilename());
 
 		if (isFile(propertiesFile)) {
 
-			Properties projectProperties = model.getProperties();
+			Properties projectProperties = mavenProject.getProperties();
 			Properties externalProperties = load(session, propertiesFile);
 
 			projectProperties.putAll(externalProperties);
