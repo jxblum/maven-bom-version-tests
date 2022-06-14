@@ -21,6 +21,7 @@
 
     <!-- TODO: The 'properties' element attributes are not (unfortunately) declared in the XSD. -->
     <properties combine.children="override" combine.self="override">
+        <properties-maven-extension.version>${project.version}</properties-maven-extension.version>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
         <spring-boot-bom.version>1.0.0-SNAPSHOT</spring-boot-bom.version>
         <!-- TODO: NOTE - SD Redis version property used to "override" the imported spring-boot-bom / spring-data-bom
@@ -52,6 +53,13 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>io.spring.maven</groupId>
+                <artifactId>properties-maven-extension</artifactId>
+                <version>${properties-maven-extension.version}</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
