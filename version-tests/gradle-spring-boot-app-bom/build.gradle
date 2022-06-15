@@ -18,6 +18,7 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation 'org.springframework.data:spring-data-geode'
     implementation 'org.springframework.data:spring-data-mongodb'
     implementation 'org.springframework.data:spring-data-redis'
 }
