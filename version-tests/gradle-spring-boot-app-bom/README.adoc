@@ -65,6 +65,8 @@ The resulting Gradle project dependencies:
 .Gradle project dependencies (abbreviated)
 [source,txt]
 ----
+$ gradlew --no-daemon dependencies | less
+
 > Task :dependencies
 
 ------------------------------------------------------------
@@ -134,11 +136,29 @@ runtimeClasspath - Runtime classpath of source set 'main'.
 ...
 ----
 
-By using Gradle, it is possible to override the transitive Spring Data Geode and Spring Data Redis module versions
-pulled in indirectly by the (Mock) Spring Boot BOM, which imports the (Mock) Spring Data BOM
-where the Spring Data modules and their respective versions are managed.
+By using Gradle, it is possible to override the transitive Spring Data Geode and Spring Data Redis module
+dependency versions pulled in indirectly by the (Mock) Spring Boot BOM, which imports the (Mock) Spring Data BOM
+where the Spring Data module dependencies and their respective versions are declared and managed.
 
 However, it is not possible to override the Apache Geode driver version nor the Micrometer version since neither
-of these transitive dependencies are declared in Maven Dependency Management.  If the Apache Geode driver
-and Micrometer transitive dependencies were declared in a Maven Dependency Management block, then it would be possible
-to override their versions.
+of these transitive dependencies are declared in a Maven Dependency Management block of any Maven BOM.
+
+If the Apache Geode driver and Micrometer transitive dependencies were declared in a Maven Dependency Management block,
+then it would be possible to override their versions.
+
+In order to override the Apache Geode driver or Micrometer transitive dependency versions, then an explicit
+Dependency Management block would still be required:
+
+.Overriding the Apache Geode driver and Micrometer dependency versions (required)
+[source,groovy]
+----
+dependencyManagement {
+    imports {
+        mavenBom 'io.micrometer:micrometer-bom:1.10.0-SNAPSHOT'
+    }
+    dependencies {
+        dependency 'org.apache.geode:geode-core:1.14.4'
+    }
+}
+
+----
