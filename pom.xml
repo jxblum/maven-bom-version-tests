@@ -14,7 +14,7 @@
         <module>properties-maven-extension</module>
         <module>spring-boot-bom</module>
         <module>spring-data-bom</module>
-        <module>spring-bom-tests</module>
+        <module>version-tests</module>
     </modules>
 
     <name>Maven BOM Version Tests</name>
