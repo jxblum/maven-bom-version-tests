@@ -15,10 +15,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>spring-boot-app-bom-import-version-property-override</module>
-        <module>spring-boot-app-bom-inheritance-version-property-override</module>
-        <module>spring-data-app-bom-import-version-property-override</module>
-        <module>spring-data-app-bom-inheritance-version-property-override</module>
+        <module>spring-boot-app-bom-import</module>
+        <module>spring-boot-app-bom-inheritance</module>
+        <module>spring-data-app-bom-import</module>
+        <module>spring-data-app-bom-inheritance</module>
         <module>workaround-for-boot-bom-import</module>
         <module>workaround-for-boot-bom-inheritance</module>
     </modules>
