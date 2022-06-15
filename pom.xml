@@ -12,6 +12,7 @@
 
     <modules>
         <module>properties-maven-extension</module>
+        <module>corporate-bom</module>
         <module>spring-boot-bom</module>
         <module>spring-data-bom</module>
         <module>version-tests</module>
