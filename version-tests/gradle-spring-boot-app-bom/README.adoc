@@ -1,0 +1,144 @@
+= Gradle-based  Spring Boot application importing the (Mock) Spring Boot BOM using version property override
+
+In this test case, the Gradle-based Spring Boot application Gradle build file *imports* the (Mock) Spring Boot BOM:
+
+.Import Spring Boot BOM
+[source,groovy]
+----
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.maven:spring-boot-bom:1.0.0-SNAPSHOT'
+    }
+}
+----
+
+In order to import the Spring Boot BOM, this Gradle project uses the Spring
+https://docs.spring.io/dependency-management-plugin/docs/current-SNAPSHOT/reference/html/[DependencyManagement Gradle Plugin]
+(also see the https://github.com/spring-gradle-plugins/dependency-management-plugin[GitHub Repository]).
+
+.Use Spring DependencyManagement Gradle Plugin
+[source,groovy]
+----
+plugins {
+    id "io.spring.dependency-management" version '1.0.11.RELEASE'
+}
+----
+
+Additionally, the Spring Boot application is using Spring Data Geode, Spring Data MongoDB and Spring Data Redis:
+
+.Using Spring Data modules
+[source,groovy]
+----
+dependencies {
+    implementation 'org.springframework.data:spring-data-geode'
+    implementation 'org.springframework.data:spring-data-mongodb'
+    implementation 'org.springframework.data:spring-data-redis'
+}
+----
+
+The Spring Boot application then tries to override the Spring Data Geode and Spring Data Redis dependency versions
+using the `spring-data-geode.version` and `spring-data-redis.version` properties declared in the Spring Data BOM
+in `gradle.properties`:
+
+.Overriding Spring Data Geode and Spring Data Redis dependency versions
+[source,properties]
+----
+# project gradle.properties
+spring-data-geode.version=2.5.0
+spring-data-redis.version=2.7.0
+----
+
+Additionally, the Spring Boot application even attempts to override the Apache Geode driver version from `1.13`
+pulled in by Spring Data Geode `2.5` to Apache Geode `1.14.4` as well as Micrometer from `1.6` pulled in
+by Apache Geode `1.13` to Micrometer `1.10.0`:
+
+.Overriding the transitive Apache Geode dependency version
+[source,properties]
+----
+# project gradle.properties
+geode.version=1.14.4
+micrometer=1.10.0
+----
+
+The resulting Gradle project dependencies:
+
+.Gradle project dependencies (abbreviated)
+[source,txt]
+----
+> Task :dependencies
+
+------------------------------------------------------------
+Root project 'gradle-spring-boot-app-bom'
+------------------------------------------------------------
+
+annotationProcessor - Annotation processors and their dependencies for source set 'main'.
+No dependencies
+
+apiElements - API elements for main. (n)
+No dependencies
+
+archives - Configuration for archive artifacts. (n)
+No dependencies
+
+compileClasspath - Compile classpath for source set 'main'.
++--- org.springframework.data:spring-data-geode -> 2.5.0
+|    +--- org.apache.geode:geode-core:1.13.2
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- commons-io:commons-io:2.6
+|    |    +--- io.micrometer:micrometer-core:1.6.3
+...
+|    +--- org.apache.geode:geode-cq:1.13.2
+|    +--- org.apache.geode:geode-lucene:1.13.2
+...
+|    +--- org.apache.geode:geode-wan:1.13.2
+...
++--- org.springframework.data:spring-data-mongodb -> 4.0.0-M4
+|    +--- org.springframework:spring-tx:6.0.0-M4 (*)
+|    +--- org.springframework:spring-context:6.0.0-M4 (*)
+|    +--- org.springframework:spring-beans:6.0.0-M4 (*)
+|    +--- org.springframework:spring-core:6.0.0-M4 (*)
+|    +--- org.springframework:spring-expression:6.0.0-M4 (*)
+|    +--- org.springframework.data:spring-data-commons:3.0.0-M4 (*)
+|    +--- org.mongodb:mongodb-driver-core:4.6.0
+|    |    \--- org.mongodb:bson:4.6.0
+|    \--- org.slf4j:slf4j-api:1.7.32
+\--- org.springframework.data:spring-data-redis -> 2.7.0
+     +--- org.springframework.data:spring-data-keyvalue:2.7.0 -> 3.0.0-M4
+     |    +--- org.springframework.data:spring-data-commons:3.0.0-M4 (*)
+     |    +--- org.springframework:spring-context:6.0.0-M4 (*)
+     |    +--- org.springframework:spring-tx:6.0.0-M4 (*)
+     |    \--- org.slf4j:slf4j-api:1.7.32
+     +--- org.springframework:spring-tx:5.3.20 -> 6.0.0-M4 (*)
+     +--- org.springframework:spring-oxm:5.3.20
+     |    +--- org.springframework:spring-beans:5.3.20 -> 6.0.0-M4 (*)
+     |    \--- org.springframework:spring-core:5.3.20 -> 6.0.0-M4 (*)
+     +--- org.springframework:spring-aop:5.3.20 -> 6.0.0-M4 (*)
+     +--- org.springframework:spring-context-support:5.3.20 (*)
+     \--- org.slf4j:slf4j-api:1.7.32
+
+compileOnly - Compile only dependencies for source set 'main'. (n)
+No dependencies
+
+default - Configuration for default artifacts. (n)
+No dependencies
+
+implementation - Implementation only dependencies for source set 'main'. (n)
++--- org.springframework.data:spring-data-geode (n)
++--- org.springframework.data:spring-data-mongodb (n)
+\--- org.springframework.data:spring-data-redis (n)
+
+mainSourceElements - List of source directories contained in the Main SourceSet. (n)
+No dependencies
+
+runtimeClasspath - Runtime classpath of source set 'main'.
+...
+----
+
+By using Gradle, it is possible to override the transitive Spring Data Geode and Spring Data Redis module versions
+pulled in indirectly by the (Mock) Spring Boot BOM, which imports the (Mock) Spring Data BOM
+where the Spring Data modules and their respective versions are managed.
+
+However, it is not possible to override the Apache Geode driver version nor the Micrometer version since neither
+of these transitive dependencies are declared in Maven Dependency Management.  If the Apache Geode driver
+and Micrometer transitive dependencies were declared in a Maven Dependency Management block, then it would be possible
+to override their versions.
