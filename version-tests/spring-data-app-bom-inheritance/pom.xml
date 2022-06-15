@@ -9,6 +9,7 @@
         <groupId>io.spring.maven</groupId>
         <artifactId>spring-data-bom</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../spring-data-bom</relativePath>
     </parent>
 
     <artifactId>spring-data-app-bom-inheritance</artifactId>

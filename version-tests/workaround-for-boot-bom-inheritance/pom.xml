@@ -9,6 +9,7 @@
 		<groupId>io.spring.maven</groupId>
 		<artifactId>spring-boot-bom</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../spring-boot-bom</relativePath>
 	</parent>
 
 	<artifactId>workaround-for-boot-bom-inheritance</artifactId>

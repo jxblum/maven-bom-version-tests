@@ -16,7 +16,7 @@
 
 	<name>Properties Maven Extension</name>
 	<description>
-		Maven Extension to externalize the configuration of a Maven Project using Java Properties
+		Maven Extension to externalize the configuration of a Maven Project using a Java Properties file
 		declared in the filesystem.
 	</description>
 
