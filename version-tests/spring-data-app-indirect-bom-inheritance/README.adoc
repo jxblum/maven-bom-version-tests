@@ -1,0 +1,99 @@
+= Spring Data application indirectly inheriting from the (Mock) Spring Data BOM
+
+In this test case, the Spring Data application _indirectly_ *inherits* from the (Mock) Spring Data BOM:
+
+.Indirecrtly inherit from (Mock) Spring Data BOM
+[source,xml]
+----
+<parent>
+    <groupId>io.spring.maven</groupId>
+    <artifactId>corporate-bom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</parent>
+
+<artifactId>spring-data-app-indirect-bom-inheritance</artifactId>
+----
+
+The `corporate-bom` _directly_ *inherits* from the (Mock) Spring Data BOM:
+
+.Corporate BOM inherits from (Mock) Spring Data BOM
+[source,xml]
+----
+<parent>
+    <groupId>io.spring.maven</groupId>
+    <artifactId>spring-data-bom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</parent>
+
+<artifactId>corporate-bom</artifactId>
+----
+
+The Spring Data application is using Spring Data MongoDB and Spring Data Redis:
+
+.Dependency declaration for Spring Data MongoDB and Spring Data Redis (no version required)
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-redis</artifactId>
+    </dependency>
+</dependencies>
+----
+
+The Spring Data application then tries to override the Spring Data Redis dependency version
+using the `spring-data-redis.version` property declared in the (Mock) Spring Data BOM:
+
+.Spring Data Redis dependency version override using property
+[source,xml]
+----
+<properties>
+    <spring-data-redis.version>2.7.0</spring-data-redis.version>
+</properties>
+----
+
+The resulting Maven POM dependency tree for the Spring Data application is:
+
+.Maven Dependency Tree
+[source,txt]
+----
+$mvn dependency:tree
+
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------< io.spring.maven:spring-data-app-indirect-bom-inheritance >------
+[INFO] Building spring-data-app-indirect-bom-inheritance 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ spring-data-app-indirect-bom-inheritance ---
+[INFO] io.spring.maven:spring-data-app-indirect-bom-inheritance:jar:1.0.0-SNAPSHOT
+[INFO] +- org.springframework.data:spring-data-mongodb:jar:4.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-tx:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-context:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-beans:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-core:jar:6.0.0-M4:compile
+[INFO] |  |  \- org.springframework:spring-jcl:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework:spring-expression:jar:6.0.0-M4:compile
+[INFO] |  +- org.springframework.data:spring-data-commons:jar:3.0.0-M4:compile
+[INFO] |  +- org.mongodb:mongodb-driver-core:jar:4.6.0:compile
+[INFO] |  |  +- org.mongodb:bson:jar:4.6.0:compile
+[INFO] |  |  \- org.mongodb:bson-record-codec:jar:4.6.0:runtime
+[INFO] |  \- org.slf4j:slf4j-api:jar:1.7.32:compile
+[INFO] \- org.springframework.data:spring-data-redis:jar:2.7.0:compile
+[INFO]    +- org.springframework.data:spring-data-keyvalue:jar:3.0.0-M4:compile
+[INFO]    +- org.springframework:spring-oxm:jar:5.3.20:compile
+[INFO]    +- org.springframework:spring-aop:jar:5.3.20:compile
+[INFO]    \- org.springframework:spring-context-support:jar:5.3.20:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.794 s
+[INFO] Finished at: 2022-06-15T18:03:47-07:00
+[INFO] ------------------------------------------------------------------------
+----
+
+This works!
