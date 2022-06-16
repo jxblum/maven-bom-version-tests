@@ -19,6 +19,7 @@
         <module>spring-boot-app-bom-inheritance</module>
         <module>spring-data-app-bom-import</module>
         <module>spring-data-app-bom-inheritance</module>
+        <module>spring-data-app-indirect-bom-inheritance</module>
         <module>workaround-for-boot-bom-import</module>
         <module>workaround-for-boot-bom-inheritance</module>
     </modules>
