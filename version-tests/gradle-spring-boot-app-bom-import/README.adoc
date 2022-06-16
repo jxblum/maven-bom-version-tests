@@ -1,4 +1,4 @@
-= Gradle-based  Spring Boot application importing the (Mock) Spring Boot BOM using version property override
+= Gradle-based Spring Boot application importing the (Mock) Spring Boot BOM using version property override
 
 In this test case, the Gradle-based Spring Boot application Gradle build file *imports* the (Mock) Spring Boot BOM:
 
@@ -37,8 +37,7 @@ dependencies {
 ----
 
 The Spring Boot application then tries to override the Spring Data Geode and Spring Data Redis dependency versions
-using the `spring-data-geode.version` and `spring-data-redis.version` properties declared in the Spring Data BOM
-in `gradle.properties`:
+using the `spring-data-geode.version` and `spring-data-redis.version` properties declared in `gradle.properties`:
 
 .Overriding Spring Data Geode and Spring Data Redis dependency versions
 [source,properties]
@@ -48,11 +47,11 @@ spring-data-geode.version=2.5.0
 spring-data-redis.version=2.7.0
 ----
 
-Additionally, the Spring Boot application even attempts to override the Apache Geode driver version from `1.13`
-pulled in by Spring Data Geode `2.5` to Apache Geode `1.14.4` as well as Micrometer from `1.6` pulled in
-by Apache Geode `1.13` to Micrometer `1.10.0`:
+Additionally, the Spring Boot application even attempts to override the Apache Geode driver version from `1.13`,
+pulled in by Spring Data Geode `2.5`, to Apache Geode `1.14.4` as well as Micrometer from `1.6`, pulled in
+by Apache Geode `1.13`, to Micrometer `1.10.0`:
 
-.Overriding the transitive Apache Geode dependency version
+.Overriding the transitive Apache Geode and Micrometer dependency versions
 [source,properties]
 ----
 # project gradle.properties
