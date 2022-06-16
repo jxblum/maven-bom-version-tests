@@ -1,4 +1,4 @@
-= Spring Data application importing the (Mock) Spring Data BOM using version property override
+= Spring Data application importing the (Mock) Spring Data BOM
 
 In this test case, the Spring Data application Maven POM *imports* the (Mock) Spring Data BOM:
 

@@ -1,4 +1,4 @@
-= Spring Boot application importing the (Mock) Spring Boot BOM using version property override
+= Spring Boot application importing the (Mock) Spring Boot BOM
 
 In this test case, the Spring Boot application Maven POM *imports* the (Mock) Spring Boot BOM:
 
