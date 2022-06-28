@@ -1,10 +1,398 @@
 = Maven BOM Versioning Tests
 
 This example Maven project experiments with project/module version management when Maven BOMs are declared and used for
-dependency management either by imports or inheritance (i.e. BOM is used as the parent project
-for a Maven project module).
+dependency management either by *imports* or *inheritance* (i.e. BOM is used as the parent project
+for a Maven project module, such as an application or library).
 
-== Helpful & Useful Links with Information about Maven
+[[use-case-problem-solution]]
+== Use Case and Problem / Solution Statement
+
+[[problem]]
+=== PROBLEM
+
+As a Spring [Boot] developer using Spring Data, I want to be able to:
+
+1. Create a Spring (Maven or Gradle-based) project using Spring Data with multiple data stores, for example: Redis and MongoDB
+2. Begin with baseline versions for all Spring Data modules by (in/directly) declaring
+the https://github.com/spring-projects/spring-data-bom/blob/main/bom/pom.xml[Spring Data BOM]
+3. Then override the https://github.com/spring-projects/spring-data-bom/blob/main/bom/pom.xml#L158[version of an individual data module]
+(for example: Redis) as needed, independently of other Spring Data modules managed in the Spring Data BOM
+4. Without using (Maven or Gradle) build specific configuration, such as Maven `dependencyManagement` configuration
+5. Simply by setting a data module specific version property (for example: `spring-data-redis.version`).
+
+Currently, the https://github.com/spring-projects/spring-data-bom/blob/main/bom/pom.xml[Spring Data BOM] *does not*
+enable users to override Spring Data module versions independently because *no version properties* were declared in
+the Spring Data BOM for the individual Spring Data modules managed by the BOM.
+
+
+[[solution]]
+=== SOLUTION
+
+The proposed solution would declare individual Spring Data module version properties in the Spring Data BOM like
+https://github.com/jxblum/maven-bom-version-tests/blob/master/spring-data-bom/pom.xml#L24-L36[this]. The version properties
+could then be used as follows: https://github.com/jxblum/maven-bom-version-tests/blob/master/spring-data-bom/pom.xml#L34[here]
+and https://github.com/jxblum/maven-bom-version-tests/blob/master/spring-data-bom/pom.xml#L91-L95[here].
+
+[[partial-solution]]
+=== (PARTIAL) SOLUTION
+
+Version property overrides will work when the user's Spring application Maven POM inherits directly or indirectly from
+the Spring Data BOM, declared as the parent POM.
+
+WARNING: Version property overrides do not work when the Spring Data BOM is only imported, either directly or indirectly.
+
+For example, either of the following configuration arrangements work as expected:
+
+.Direct Inheritance
+[source,txt]
+----
+Spring application Maven POM -> Spring Data BOM
+----
+
+Or:
+
+.Indirect Inheritance
+[source,txt]
+----
+Spring appliation Maven POM -> Corporate BOM -> Spring Data BOM
+----
+
+Concretely, when using direct inheritance (i.e. the Spring Data BOM is the parent of the Spring application Maven POM),
+the Spring application Maven POM will be configured like so:
+
+.Spring application Maven POM
+[source,xml]
+----
+<pom>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.spring.maven</groupId>
+        <artifactId>spring-data-bom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-data-app</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <spring-data-redis.version>2.7.0</spring-data-redis.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+    </dependencies>
+</pom>
+----
+
+Which results in the following Maven project dependency tree:
+
+.mvn dependency:tree
+[source,txt]
+----
+$mvn dependency:tree
+...
+[INFO] io.spring.maven:spring-data-app-bom-inheritance:jar:1.0.0-SNAPSHOT
+[INFO] +- org.springframework.data:spring-data-mongodb:jar:4.0.0-M4:compile
+...
+[INFO] \- org.springframework.data:spring-data-redis:jar:2.7.0:compile
+...
+----
+
+NOTE: Without the `spring-data-redis.version` property override, the Spring Data Redis version
+would have been set to `3.0.0-M4`.
+
+This example can be seen in the
+https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/spring-data-app-bom-inheritance[spring-data-app-bom-inheritance] version test.
+
+Again, and by extension, overriding a Spring Data module version property even works when the user's Spring application
+Maven POM inherits from the Spring Data BOM *indirectly*:
+
+.Indirect Inheritance
+[source,txt]
+----
+Spring application Maven POM -> Corporate BOM -> Spring Data BOM
+----
+
+This example can be seen in the
+https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/spring-data-app-indirect-bom-inheritance[spring-data-app-indirect-bom-inheritance] version test.
+
+[[outcome]]
+== ACTUAL OUTCOME
+
+However, the <<solution>> and <<partial-solution>> break down when the Spring Data BOM is *imported* _indirectly_
+through inheritance (for example: by using Spring Boot dependency management as generated on https://start.spring.io[start.spring.io])
+or when *imported* _directly_ by the user's Spring application Maven POM, itself.
+
+For example, a Spring Data module dependency (Redis) version property override does not work when the Spring Data BOM
+is *imported* (rather than _inherited_) even in a partial Maven POM inheritance hierarchy, as demonstrated in
+the https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/spring-boot-app-bom-inheritance[spring-boot-app-bom-inheritance] version test.
+
+In this test, even though the user's Spring application Maven POM _inherits_ directly from the (Mock) Spring Boot BOM,
+the version property override for the Spring Data Redis module dependency does not work simply because the (Mock) Spring
+Boot BOM *imports* the (Mock) Spring Data BOM and does *not* (naturally) _inherit_ from the (Mock) Spring Data BOM.
+
+This is exactly the situation that occurs when a user https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.0.0-SNAPSHOT&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=data-redis,data-mongodb[generates a Spring Maven project]
+at https://start.spring.io[start.spring.io]. The user's generated Spring application Maven POM would _inherit_ directly
+from the `org.springframework.boot:spring-boot-starter-parent`, which is https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#using.parent-pom[based on]
+`spring-boot-dependencies`. However, https://github.com/spring-projects/spring-boot/blob/v3.0.0-M3/spring-boot-project/spring-boot-dependencies/build.gradle[spring-boot-dependencies]
+only https://github.com/spring-projects/spring-boot/blob/v3.0.0-M3/spring-boot-project/spring-boot-dependencies/build.gradle#L1384-L1390[*imports* the Spring Data BOM],
+thereby creating the problem.
+
+NOTE: `spring-boot-dependencies` cannot inherit from a single Maven BOM, such as Spring Data BOM, since it curates,
+harmonizes and manages multiple dependencies commonly used by Spring projects, both internal (Spring projects like
+Spring Batch, Spring Integration, Spring Security, and so on, that all have their own BOMs) as well as external
+dependencies, like Jackson, which also, in some cases, have their own BOMs.
+
+[[workaround]]
+=== WORKAROUND
+
+As both experienced Maven and Gradle users are aware, the dependency management capabilities of their build tool
+of choice can be used to work around this issue. However, this is (subjectively) 1) build tool specific
+(especially in its configuration) and 2) not convenient.
+
+Furthermore, not all build tools are equal. Gradle is much more flexible and powerful in this regard as we will explore
+further below.
+
+In Maven, a user would need to explicitly declare and override the Spring Data module version using Dependency Management
+when the user's Spring [Data] application Maven POM *imports* the Spring Data BOM in/directly, such as when inheriting
+from the `spring-boot-starter-parent`, or simply when https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#using.import[_importing_]
+the `spring-boot-dependencies`, similar to the following:
+
+.Using Maven Dependency Management (Required when importing)
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.spring.maven</groupId>
+            <artifactId>spring-boot-bom</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>import</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+This is demonstrated in the "*_Workaround_*" version tests; for example:
+https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/workaround-for-boot-bom-import[workaround-for-boot-bom-import] version test.
+
+It also does not matter if the user's Spring application Maven POM (in/directly) _inherits_ from the (Mock) Spring Boot BOM.
+Since the (Mock) Spring Boot BOM *imports* the (Mock) Spring Data BOM
+(see https://github.com/jxblum/maven-bom-version-tests/blob/master/spring-boot-bom/pom.xml#L26-L36[here]),
+then the Maven workaround is required, as demonstrated in
+the https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/workaround-for-boot-bom-inheritance[workaround-for-boot-bom-inheritance] version test.
+
+Gradle configuration is similar and would necessarily involve the use of the https://docs.spring.io/dependency-management-plugin/docs/current-SNAPSHOT/reference/html/[Spring Dependency Management Gradle Plugin].
+However, with Gradle, using Dependency Management is not strictly required since Gradle dependency version property
+overrides will work as one might expect, even when _importing_ a BOM.
+
+NOTE: A Gradle build file cannot _inherit_ from a Maven BOM file. It can only _import_ one.
+
+.Using Gradle Dependency Management (NOT REQUIRED)
+[source,groovy]
+----
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.maven:spring-boot-bom:1.0.0-SNAPSHOT'
+    }
+    dependencies {
+        dependency 'org.springframework.data:spring-data-redis:2.7.0'
+    }
+}
+----
+
+[[gradle]]
+=== GRADLE
+
+Gradle is special in that if only the Maven BOM is _imported_:
+
+.Import Maven BOM
+[source,groovy]
+----
+dependencyManagement {
+    imports {
+        mavenBom 'io.spring.maven:spring-boot-bom:1.0.0-SNAPSHOT'
+    }
+}
+----
+
+Then a user can still override a Spring Data module version if so desired simply by setting the Spring Data BOM
+version property for the Spring Data module dependency, either in `build.gradle`:
+
+.build.gradle
+[source,groovy]
+----
+ext['spring-data-redis.version'] = '2.7.0'
+----
+
+Or, in `gradle.properties`:
+
+.gradle.properties
+[source,properties]
+----
+spring-data-redis.version = 2.7.0
+----
+
+And therefore, *no* dependency management for the Spring Data Redis dependency is required:
+
+.NOT REQUIRED
+[source,groovy]
+----
+dependencyManagement {
+    dependencies {
+        dependency 'org.springframework.data:spring-data-redis:2.7.0'
+    }
+}
+----
+
+Just use the version property.  Of course, that requires the Spring Data BOM to declare version properties for all
+Spring Data modules managed by the BOM in the first place.
+
+This test case can be seen in
+the https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/gradle-spring-boot-app-bom-import[gradle-spring-boot-app-bom-import] version test.
+
+As the test case demonstrates, the Spring application Gradle build
+https://github.com/jxblum/maven-bom-version-tests/blob/master/version-tests/gradle-spring-boot-app-bom-import/build.gradle#L16[imports]
+the (Mock) Spring Boot BOM, as would be the case when generating a project at https://start.spring.io[start.spring.io].
+However, it overrides the Spring Data Redis dependency (https://github.com/jxblum/maven-bom-version-tests/blob/master/version-tests/gradle-spring-boot-app-bom-import/build.gradle#L29[declared here])
+version by https://github.com/jxblum/maven-bom-version-tests/blob/master/version-tests/gradle-spring-boot-app-bom-import/gradle.properties#L4[setting]
+the version property in `gradle.properties`.
+
+This results in:
+
+[source,txt]
+----
+compileClasspath - Compile classpath for source set 'main'.
++--- org.springframework.data:spring-data-geode -> 2.5.0
+...
++--- org.springframework.data:spring-data-mongodb -> 4.0.0-M4
+...
+\--- org.springframework.data:spring-data-redis -> 2.7.0
+...
+----
+
+Where the Spring Data BOM is rooted in `3.0`.
+
+Gradle is more capable than Maven in this case.
+
+[[process-discovery]]
+=== PROCESS OF DISCOVERY
+
+Throughout the process of discovering the behavior of both Maven and Gradle with and what was and was not possible
+with respect to dependency version overriding, I did uncover 1 approach with Maven that insects with Gradle.
+
+If a user declares the version property on the Maven command-line as a System property to override a Spring Data module
+version, then it works!
+
+For example, let's take 1 of the version tests that are unaffected by the normal declaration of a version property
+override, such as when declaring properties in the Spring application Maven POM directly.
+
+In the https://github.com/jxblum/maven-bom-version-tests/tree/master/version-tests/spring-boot-app-bom-inheritance[spring-boot-app-bom-inheritance] version test,
+which is most like a Spring application Maven project generated on https://start.spring.io[start.spring.io], even though
+the Spring application Maven POM https://github.com/jxblum/maven-bom-version-tests/blob/master/version-tests/spring-boot-app-bom-inheritance/pom.xml#L8-L13[_inherits_ from]
+the (Mock) Spring Boot BOM, the (Mock) Spring Boot BOM still https://github.com/jxblum/maven-bom-version-tests/blob/master/spring-boot-bom/pom.xml#L26-L36[_imports_]
+the (Mock) Spring Data BOM. Therefore, the Spring Data Redis module https://github.com/jxblum/maven-bom-version-tests/blob/master/version-tests/spring-boot-app-bom-inheritance/pom.xml#L27[version property override]
+does not work in this case.
+
+But, if I declare the version property override on the Maven command-line, like so:
+
+.Declaring Version Property Override on Maven command-line
+[source,txt]
+----
+$ mvn -Dspring-data-redis.version=2.5.0 clean install
+----
+
+Then it works!
+
+.Maven Dependency Tree
+[source,txt]
+----
+$ mvn -Dspring-data-redis.version=2.5.0 dependency:tree
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ----------< io.spring.maven:spring-boot-app-bom-inheritance >-----------
+[INFO] Building spring-boot-app-bom-inheritance 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ spring-boot-app-bom-inheritance ---
+[INFO] io.spring.maven:spring-boot-app-bom-inheritance:jar:1.0.0-SNAPSHOT
+[INFO] +- org.springframework.data:spring-data-mongodb:jar:4.0.0-M4:compile
+...
+[INFO] |  +- org.mongodb:mongodb-driver-core:jar:4.6.0:compile
+...
+[INFO] \- org.springframework.data:spring-data-redis:jar:2.5.0:compile
+[INFO]    +- org.springframework.data:spring-data-keyvalue:jar:3.0.0-M4:compile
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.624 s
+[INFO] Finished at: 2022-06-28T13:58:25-07:00
+[INFO] ------------------------------------------------------------------------
+----
+
+This led me to explore how Maven property interpolation and resolution works. I thought, if I could override
+a version property using a System property at the Maven command-line, then it should be possible to do this with
+Maven using a Plugin or Extension when Maven processes the POM file. If successful, then this would bring Maven more
+inline with Gradle.
+
+So, I tried creating a https://maven.apache.org/examples/maven-3-lifecycle-extensions.html[Maven Extension]
+in the https://github.com/jxblum/maven-bom-version-tests/tree/master/properties-maven-extension[properties-maven-extension] module.
+However, I was unsuccessful in getting my Maven Extension to work.
+
+It is possible that I am still not plugging into, or rather https://maven.apache.org/examples/maven-3-lifecycle-extensions.html#lifecyle-participation["participating"]
+in the right Maven Lifecycle Extension. I am sure this would work somehow. If it did, then Spring Data, like Spring Boot,
+could possibly publish a custom Maven Plugin/Extension affording users more control over the Spring Data modules
+used by their Spring applications.
+
+[[conclusion]]
+== Conclusion
+
+In conclusion, despite the limitations of both Maven (version properties only work with inheritance) and Gradle
+(requires Spring Dependency Management plugin), I still propose that we *introduce dedicated version properties
+for each of the Spring Data modules declared in and managed by the Spring Data BOM*.
+
+Additionally, I also propose that each individual Spring Data module project (e.g. Spring Data Redis) *declare
+the underlying database driver (e.g. Lettuce) in a `<dependencyManagement>` block and use a version property
+for the driver version* (e.g. `lettuce.version`).
+
+In fact, most Spring Data modules already declare a version property for the driver version
+(for https://github.com/spring-projects/spring-data-redis/blob/main/pom.xml#L26[example]). However, a `<dependencyManagement>`
+block using the version property would still be required in the Spring Data module Maven POM file in order for the version property
+to be overridden in the user's Spring (Data) application Maven POM, or as a Gradle property.
+
+This is in fact how Spring Boot's Dependency Management for Spring dependencies as well as 3rd party dependencies
+was set up and intended.  For example, if a 3rd party dependency was compromised in someway (e.g. Log4j), then it
+is possible for users to override that dependency by setting the appropriate dependency version property
+(see https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/#using.parent-pom[here for Maven]
+and https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#managing-dependencies.dependency-management-plugin.customizing[here for Gradle]).
+
+Spring Boot declares https://docs.spring.io/spring-boot/docs/current/reference/html/dependency-versions.html#appendix.dependency-versions.properties[version properties]
+for all managed dependencies.
+
+This proposal follows that pattern and pushes it down to 1) the Spring Data modules as well as 1 level deeper to
+2) the database driver version even.
+
+I also think we should use consistent naming in our driver version properties, i.e. `lettuce.version` and not `lettuce`
+as well as Spring Data module version properties declare in the Spring Data BOM, i.e. `spring-data-redis.version`.
+
+[[links]]
+== Useful links to information about Maven
 
 * https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#project-interpolation-and-variables[Project Interpolation and Variables]
 
@@ -12,7 +400,3 @@ Discusses the use of variables when both the parent and child declare and define
 
 > _One factor to note is that these variables are processed after inheritance as outlined above. This means that
 if a parent project uses a variable, then its definition in the child, not the parent, will be the one eventually used._
-
-
-
-
